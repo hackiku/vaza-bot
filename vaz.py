@@ -11,24 +11,33 @@ load_dotenv()
 discord_token = os.getenv("DISCORD_TOKEN")
 openai_api_key = os.getenv("OPENAI_API_KEY")
 
-# Initialize Discord Bot
-bot = commands.Bot(command_prefix="!")
+# Define Intents
+intents = discord.Intents.default()
+intents.messages = True  # Enable the bot to receive messages
+intents.message_content = True  # Enable access to message content
+
+# Initialize Discord Bot with Intents
+bot = commands.Bot(command_prefix="!", intents=intents)
 
 def encode_image(image_url):
+    # Encode the image at the given URL to base64
     response = requests.get(image_url)
     return base64.b64encode(response.content).decode('utf-8')
 
 @bot.event
 async def on_ready():
+        # listen to bot online/offline events
     print(f"{bot.user.name} has connected to Discord!")
 
 @bot.event
 async def on_message(message):
+    
+    # listen to new messages
     if message.author == bot.user:
         return
 
     if bot.user.mentioned_in(message):
-        # Assuming the image is sent as an attachment
+        # Process messages with attachments
         if message.attachments:
             image_url = message.attachments[0].url
             base64_image = encode_image(image_url)
@@ -40,7 +49,7 @@ async def on_message(message):
                     {
                         "role": "user",
                         "content": [
-                            {"type": "text", "text": "Act as a discord bot. Provide the correct answer to this aerospace uni self-test and explain why in less than 150 words."},
+                            {"type": "text", "text": "Act as a discord bot that explains aerospace university class materials. Respond succinctly in 100 words or less"},
                             {"type": "image_url", "image_url": {"url": f"data:image/png;base64,{base64_image}"}}
                         ]
                     }
