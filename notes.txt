@@ -1,1 +1,3 @@
 https://discord.com/api/oauth2/authorize?client_id=1174827140546572330&permissions=275415026688&scope=bot
+
+# watchmedo auto-restart --patterns="*.py" --directory="." -- python vaz.py

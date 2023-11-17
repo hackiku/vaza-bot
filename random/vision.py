@@ -1,13 +1,27 @@
+model a numerical solution to this problem in matlab with informative comments. output the MATLAB code snippet first and then explain it in words
+
+                usage = response_json["usage"]
+                
+                # Prepare the response message for Discord
+                response_message = (
+                    f"**Response:**\n{content}\n"
+                    f"**Usage:**\n"
+                    f"Prompt Tokens: {usage['prompt_tokens']}, "
+                    f"Completion Tokens: {usage['completion_tokens']}, "
+                    f"Total Tokens: {usage['total_tokens']}"
+                    f"prompt: {user_message}"
+                )
+
+
+
+# https://platform.openai.com/docs/guides/vision
+
 from openai import OpenAI
-from dotenv import load_dotenv
 import base64
 import requests
 import json
-import os
 
-load_dotenv()
-
-api_key = os.getenv("OPENAI_API_KEY")
+# OpenAI API Key
 
 # Function to encode the image to base64
 def encode_image(image_path):
@@ -15,7 +29,7 @@ def encode_image(image_path):
         return base64.b64encode(image_file.read()).decode('utf-8')
 
 # Path to your image
-image_path = "./image.jpg"
+image_path = "image.png"
 
 # Encode the image
 base64_image = encode_image(image_path)
@@ -35,8 +49,7 @@ payload = {
             "content": [
                 {
                     "type": "text",
-                    "text": "Your name is Vaza, the all-knowing smartass AI companion to a bunch of aerospace engineering students. Always say your name in your responses introducing yourself."
-                            "You know all about CFD, aerodynamics, rocket science, aviation and are hell-bent of helping us ace our classes in any way possible. You keep answers lively, engaging, youthful, and short"
+                    "text": "Analyze this image from a computational fluid dynamics perspective."
                 },
                 {
                     "type": "image_url",
@@ -60,6 +73,3 @@ if response.status_code == 200:
 else:
     print("Failed to get response. Status code:", response.status_code)
     print("Response content:", response.content)
-
-
-# https://platform.openai.com/docs/guides/vision
