@@ -65,10 +65,23 @@ async def on_message(message):
             response = requests.post("https://api.openai.com/v1/chat/completions", headers=headers, json=payload)
 
             if response.status_code == 200:
-                api_response = json.dumps(response.json(), indent=4)
-                await message.channel.send(f"Response from GPT-4 Vision API:\n{api_response}")
+                response_json=response.json()
+                content = response_json["choices"][0]["message"]["content"]
+                usage = response_json["usage"]
+                
+                # prepare response message
+                response_message = (
+                    f"**Response:**\n{content}\n"
+                    f"**Usage:**\n"
+                    f"Prompt Tokens: {usage['prompt_tokens']}, "
+                    f"Completion Tokens: {usage['completion_tokens']}, "
+                    f"Total Tokens: {usage['total_tokens']}"
+                )
+                await message.channel.send(response_message)
             else:
-                await message.channel.send(f"Failed to get response. Status code: {response.status_code}")
+                error_message = f"Failed to get response. Status code: {response.status_code}\n{response.content.decode()}"
+                await message.channel.send(error_message)
+            await message.channel.send(error_message)
         else:
             await message.channel.send("No image found in the message.")
 
